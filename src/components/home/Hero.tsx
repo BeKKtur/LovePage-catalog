@@ -41,7 +41,8 @@ export function Hero() {
         <span className="art-label">A MOMENT TO REMEMBER</span>
         <div className="hero-phone back">
           <PhoneMockup
-            image={kyzTemplate?.coverImage ?? ""}
+            image={kyzTemplate?.coverImage}
+            demoUrl={kyzTemplate?.demoUrl}
             alt={`${kyzTemplate?.title ?? "Кыз узатуу"} — превью дизайна`}
             imagePosition={kyzTemplate?.imagePosition}
             priority
@@ -49,7 +50,8 @@ export function Hero() {
         </div>
         <div className="hero-phone front">
           <PhoneMockup
-            image={weddingTemplate?.coverImage ?? ""}
+            image={weddingTemplate?.coverImage}
+            demoUrl={weddingTemplate?.demoUrl}
             alt={`${weddingTemplate?.title ?? "Свадебное приглашение"} — превью дизайна`}
             imagePosition={weddingTemplate?.imagePosition}
             priority

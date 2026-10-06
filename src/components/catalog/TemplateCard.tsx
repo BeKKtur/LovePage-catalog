@@ -12,6 +12,7 @@ export function TemplateCard({ template }: { template: Template }) {
     <>
       <PhoneMockup
         image={template.coverImage}
+        demoUrl={template.demoUrl}
         alt={`${template.title} — превью дизайна`}
         imagePosition={template.imagePosition}
       />

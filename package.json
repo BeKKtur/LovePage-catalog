@@ -7,8 +7,10 @@
     "build": "next build --webpack",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "predev": "node scripts/sync-preview-brand.mjs",
-    "prebuild": "node scripts/sync-preview-brand.mjs"
+    "predev": "node scripts/sync-preview-brand.mjs && node scripts/generate-previews.mjs",
+    "prebuild": "node scripts/sync-preview-brand.mjs && node scripts/generate-previews.mjs",
+    "previews": "node scripts/generate-previews.mjs",
+    "previews:setup": "playwright install chromium"
   },
   "dependencies": {
     "next": "^16.0.0",
@@ -16,13 +18,14 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "typescript": "^5.9.0",
+    "@tailwindcss/postcss": "^4.0.0",
+    "@types/node": "^24.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "@types/node": "^24.0.0",
-    "tailwindcss": "^4.0.0",
-    "@tailwindcss/postcss": "^4.0.0",
     "eslint": "^9.0.0",
-    "eslint-config-next": "^16.0.0"
+    "eslint-config-next": "^16.0.0",
+    "playwright": "^1.63.0",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.9.0"
   }
 }

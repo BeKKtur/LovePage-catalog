@@ -1,3 +1,4 @@
+import { getPreviewImage } from "@/lib/previews";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -30,6 +31,7 @@ export default async function Demo({
   const { slug } = await params;
   const t = templates.find((t) => t.slug === slug);
   if (!t || t.status === "hidden") notFound();
+  const previewImage = getPreviewImage(t.coverImage, t.demoUrl);
   return (
     <div className={`demo-page ${t.category}`}>
       <div className="demo-bar">
@@ -37,13 +39,17 @@ export default async function Demo({
         <span>Демонстрация · {t.title}</span>
       </div>
       <div className="demo-cover">
-        <Image
-          src={t.coverImage}
-          alt={t.title}
-          width={420}
-          height={840}
-          priority
-        />
+        {previewImage ? (
+          <Image
+            src={previewImage}
+            alt={t.title}
+            width={420}
+            height={840}
+            priority
+          />
+        ) : (
+          <div className="preview-fallback">Preview скоро</div>
+        )}
       </div>
       <DemoExperience template={t} />
     </div>

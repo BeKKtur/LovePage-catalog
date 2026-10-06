@@ -2,7 +2,8 @@
 ==================================================
 КАК ДОБАВИТЬ НОВЫЙ ДИЗАЙН
 ==================================================
-1. Добавь screenshot в /public/templates/.
+1. Screenshot в /public/templates/ — только для ручной обложки.
+   Для автоматического preview оставь coverImage пустым и заполни demoUrl.
 2. Скопируй первый объект шаблона ниже.
 3. Измени id, slug, title, category, description,
    code (уникальный), order, price, coverImage и demoUrl.
@@ -33,7 +34,7 @@ export interface Template {
   description: string;
   oldPrice?: number;
   price: number;
-  coverImage: string;
+  coverImage?: string;
   demoUrl?: string;
   featured?: boolean;
 }
@@ -55,8 +56,8 @@ export const templates: Template[] = [
     oldPrice: 2500,
     // Цена именно этого дизайна
     price: 1500,
-    // Screenshot: например /templates/white-pearl.webp
-    coverImage: "/previews/white-pearl.svg",
+    // Необязательно: ручная обложка. Пусто = screenshot по demoUrl при сборке.
+    coverImage: "",
     // Какая часть screenshot видна: top, center или bottom
     imagePosition: "center",
     // Реальная ссылка Vercel или другого хостинга; пустая = «Скоро»
