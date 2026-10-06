@@ -1,7 +1,9 @@
 import Link from "next/link";
-import { templates } from "@/data/templates";
+import { getVisibleTemplates } from "@/data/templates";
 import { PhoneMockup } from "@/components/catalog/PhoneMockup";
 export function Hero() {
+  const weddingTemplate = getVisibleTemplates("wedding")[0];
+  const kyzTemplate = getVisibleTemplates("kyz-uzatuu")[0];
   return (
     <section className="hero">
       <div className="hero-copy">
@@ -38,10 +40,20 @@ export function Hero() {
       <div className="hero-art">
         <span className="art-label">A MOMENT TO REMEMBER</span>
         <div className="hero-phone back">
-          <PhoneMockup template={templates[4]} priority />
+          <PhoneMockup
+            image={kyzTemplate?.coverImage ?? ""}
+            alt={`${kyzTemplate?.title ?? "Кыз узатуу"} — превью дизайна`}
+            imagePosition={kyzTemplate?.imagePosition}
+            priority
+          />
         </div>
         <div className="hero-phone front">
-          <PhoneMockup template={templates[0]} priority />
+          <PhoneMockup
+            image={weddingTemplate?.coverImage ?? ""}
+            alt={`${weddingTemplate?.title ?? "Свадебное приглашение"} — превью дизайна`}
+            imagePosition={weddingTemplate?.imagePosition}
+            priority
+          />
         </div>
         <div className="art-stamp">
           made with

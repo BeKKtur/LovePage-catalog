@@ -1,4 +1,4 @@
-import { templates } from "@/data/templates";
+import { getVisibleTemplates } from "@/data/templates";
 import type { TemplateCategory } from "@/data/categories";
 import { TemplateCard } from "./TemplateCard";
 export function TemplateGrid({
@@ -8,12 +8,7 @@ export function TemplateGrid({
   category?: TemplateCategory;
   featured?: boolean;
 }) {
-  const categoryTemplates = templates.filter(
-    (template) => !category || template.category === category,
-  );
-  const visibleTemplates = featured
-    ? categoryTemplates.filter((template) => template.featured)
-    : categoryTemplates;
+  const visibleTemplates = getVisibleTemplates(category, featured);
   return (
     <div className="catalog">
       {visibleTemplates.map((template) => (

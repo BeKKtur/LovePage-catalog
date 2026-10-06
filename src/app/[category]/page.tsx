@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import { categories } from "@/data/categories";
 import { TemplateGrid } from "@/components/catalog/TemplateGrid";
 import { CTA } from "@/components/shared/CTA";
-import { templates } from "@/data/templates";
+import { getVisibleTemplates } from "@/data/templates";
 export function generateStaticParams() {
   return categories.map((category) => ({ category: category.slug }));
 }
@@ -69,12 +69,8 @@ export default async function Category({
             Найдите <em>свой дизайн.</em>
           </h2>
           <span>
-            {
-              templates.filter(
-                (template) => template.category === selectedCategory.slug,
-              ).length
-            }{" "}
-            дизайна · от {formatPrice(SITE_CONFIG.pricing.readyTemplate)}
+            {getVisibleTemplates(selectedCategory.slug).length} дизайна · от{" "}
+            {formatPrice(SITE_CONFIG.pricing.readyTemplate)}
           </span>
         </div>
         <TemplateGrid category={selectedCategory.slug} />

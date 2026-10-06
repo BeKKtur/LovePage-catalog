@@ -6,15 +6,23 @@ import { PhoneMockup } from "@/components/catalog/PhoneMockup";
 import { useOrder } from "@/components/order/OrderProvider";
 export function TemplateCard({ template }: { template: Template }) {
   const { openOrderModal } = useOrder();
-  const demoUrl = template.demoUrl?.trim();
+  const demoUrl =
+    template.status === "soon" ? undefined : template.demoUrl?.trim();
   const visual = (
     <>
-      <PhoneMockup template={template} />
+      <PhoneMockup
+        image={template.coverImage}
+        alt={`${template.title} — превью дизайна`}
+        imagePosition={template.imagePosition}
+      />
       <span className="visual-caption">{SITE_CONFIG.brandName} COLLECTION</span>
     </>
   );
   return (
-    <article className={`invitation-card ${template.category}`}>
+    <article
+      data-template-code={template.code}
+      className={`invitation-card ${template.category}`}
+    >
       {demoUrl ? (
         <a
           className="card-visual"
@@ -24,9 +32,17 @@ export function TemplateCard({ template }: { template: Template }) {
           aria-label={`Посмотреть ${template.title}`}
         >
           {visual}
+          {template.badge && (
+            <span className="template-badge">{template.badge}</span>
+          )}
         </a>
       ) : (
-        <div className="card-visual">{visual}</div>
+        <div className="card-visual">
+          {visual}
+          {template.badge && (
+            <span className="template-badge">{template.badge}</span>
+          )}
+        </div>
       )}
       <div className="card-info">
         <p className="card-category">
@@ -39,14 +55,24 @@ export function TemplateCard({ template }: { template: Template }) {
         </div>
         <div className="card-actions">
           {demoUrl ? (
-            <a href={demoUrl} target="_blank" rel="noopener noreferrer">
-              Посмотреть <span>↗</span>
+            <a
+              aria-label={`Посмотреть ${template.title}`}
+              href={demoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span className="desktop-preview-label">Посмотреть</span>
+              <span className="mobile-preview-label">Смотреть</span>{" "}
+              <span aria-hidden="true">↗</span>
             </a>
           ) : (
             <button disabled>Скоро</button>
           )}
-          <button onClick={() => openOrderModal(template)}>
-            Заказать <span>↗</span>
+          <button
+            aria-label={`Заказать ${template.title}`}
+            onClick={() => openOrderModal(template)}
+          >
+            Заказать <span aria-hidden="true">↗</span>
           </button>
         </div>
       </div>

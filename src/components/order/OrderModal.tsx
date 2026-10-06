@@ -20,15 +20,21 @@ export function OrderModal({
     (category) => category.slug === selectedTemplate?.category,
   );
   const message = selectedTemplate
-    ? `Здравствуйте! Хочу заказать дизайн «${selectedTemplate.title}» за ${formatPrice(selectedTemplate.price)}.`
+    ? `Здравствуйте! Хочу заказать дизайн «${selectedTemplate.title}» (${selectedTemplate.code}) за ${formatPrice(selectedTemplate.price)}.`
     : "Здравствуйте! Хочу обсудить индивидуальный сайт.";
 
   useEffect(() => {
     dialogRef.current?.showModal();
-    const previousOverflow = document.body.style.overflow;
+    const previousBodyStyle = document.body.getAttribute("style");
+    const scrollPosition = window.scrollY;
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollPosition}px`;
+    document.body.style.width = "100%";
     document.body.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = previousOverflow;
+      if (previousBodyStyle === null) document.body.removeAttribute("style");
+      else document.body.setAttribute("style", previousBodyStyle);
+      window.scrollTo({ top: scrollPosition, behavior: "instant" });
     };
   }, []);
 
@@ -49,14 +55,18 @@ export function OrderModal({
       aria-labelledby="order-title"
       onCancel={closeOrderModal}
       onClick={(event) => {
-        if (event.target === event.currentTarget) closeOrderModal();
+        const bounds = event.currentTarget.getBoundingClientRect();
+        if (
+          event.target === event.currentTarget &&
+          (event.clientX < bounds.left ||
+            event.clientX > bounds.right ||
+            event.clientY < bounds.top ||
+            event.clientY > bounds.bottom)
+        )
+          closeOrderModal();
       }}
     >
-      <button
-        className="close"
-        aria-label="Закрыть окно"
-        onClick={closeOrderModal}
-      >
+      <button className="close" aria-label="Закрыть" onClick={closeOrderModal}>
         ×
       </button>
       <div className="order-content">
@@ -68,7 +78,10 @@ export function OrderModal({
         </h2>
         {selectedTemplate && (
           <div className="order-selection">
-            <span>{selectedCategory?.title}</span>
+            <span>
+              {selectedCategory?.title}
+              <small className="order-code">Код: {selectedTemplate.code}</small>
+            </span>
             <strong>{formatPrice(selectedTemplate.price)}</strong>
           </div>
         )}

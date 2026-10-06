@@ -5,8 +5,12 @@
 1. Добавь screenshot в /public/templates/.
 2. Скопируй первый объект шаблона ниже.
 3. Измени id, slug, title, category, description,
-   price, coverImage и demoUrl.
+   code (уникальный), order, price, coverImage и demoUrl.
 4. featured: true — дизайн также появится на главной.
+status: available — обычная карточка; soon — без демо; hidden — скрыта.
+badge: "Новинка" — маленькая метка (можно не указывать).
+order — порядок карточек, меньшее число идёт раньше.
+imagePosition: "top", "center" или "bottom" — кадрирование screenshot.
 
 Категории:
 wedding    = Свадьба
@@ -19,6 +23,11 @@ import type { TemplateCategory } from "./categories";
 export interface Template {
   id: string;
   slug: string;
+  code: string;
+  order: number;
+  status?: "available" | "soon" | "hidden";
+  badge?: string;
+  imagePosition?: string;
   title: string;
   category: TemplateCategory;
   description: string;
@@ -31,6 +40,9 @@ export interface Template {
 export const templates: Template[] = [
   {
     id: "white-pearl",
+    code: "W-01",
+    order: 1,
+    status: "available",
     slug: "white-pearl",
     // Название в каталоге
     title: "White Pearl",
@@ -45,6 +57,8 @@ export const templates: Template[] = [
     price: 1500,
     // Screenshot: например /templates/white-pearl.webp
     coverImage: "/previews/white-pearl.svg",
+    // Какая часть screenshot видна: top, center или bottom
+    imagePosition: "center",
     // Реальная ссылка Vercel или другого хостинга; пустая = «Скоро»
     demoUrl: "",
     // Показывать также среди избранных на главной
@@ -52,6 +66,9 @@ export const templates: Template[] = [
   },
   {
     id: "golden-vows",
+    code: "W-02",
+    order: 2,
+    status: "available",
     slug: "golden-vows",
     title: "Golden Vows",
     category: "wedding",
@@ -65,6 +82,9 @@ export const templates: Template[] = [
   },
   {
     id: "emerald-wedding",
+    code: "W-03",
+    order: 3,
+    status: "available",
     slug: "emerald-wedding",
     title: "Emerald Wedding",
     category: "wedding",
@@ -78,6 +98,9 @@ export const templates: Template[] = [
   },
   {
     id: "royal-blue",
+    code: "W-04",
+    order: 4,
+    status: "available",
     slug: "royal-blue",
     title: "Royal Blue",
     category: "wedding",
@@ -91,6 +114,9 @@ export const templates: Template[] = [
   },
   {
     id: "pink-blossom",
+    code: "K-01",
+    order: 1,
+    status: "available",
     slug: "pink-blossom",
     title: "Pink Blossom",
     category: "kyz-uzatuu",
@@ -104,6 +130,9 @@ export const templates: Template[] = [
   },
   {
     id: "white-butterfly",
+    code: "K-02",
+    order: 2,
+    status: "available",
     slug: "white-butterfly",
     title: "White Butterfly",
     category: "kyz-uzatuu",
@@ -117,6 +146,9 @@ export const templates: Template[] = [
   },
   {
     id: "golden-flower",
+    code: "K-03",
+    order: 3,
+    status: "available",
     slug: "golden-flower",
     title: "Golden Flower",
     category: "kyz-uzatuu",
@@ -130,6 +162,9 @@ export const templates: Template[] = [
   },
   {
     id: "our-story",
+    code: "L-01",
+    order: 1,
+    status: "available",
     slug: "our-story",
     title: "Our Story",
     category: "love",
@@ -143,6 +178,9 @@ export const templates: Template[] = [
   },
   {
     id: "love-letter",
+    code: "L-02",
+    order: 2,
+    status: "available",
     slug: "love-letter",
     title: "Love Letter",
     category: "love",
@@ -156,6 +194,9 @@ export const templates: Template[] = [
   },
   {
     id: "forever-us",
+    code: "L-03",
+    order: 3,
+    status: "available",
     slug: "forever-us",
     title: "Forever Us",
     category: "love",
@@ -169,6 +210,9 @@ export const templates: Template[] = [
   },
   {
     id: "the-gift",
+    code: "G-01",
+    order: 1,
+    status: "available",
     slug: "the-gift",
     title: "The Gift",
     category: "gift",
@@ -182,6 +226,9 @@ export const templates: Template[] = [
   },
   {
     id: "secret-box",
+    code: "G-02",
+    order: 2,
+    status: "available",
     slug: "secret-box",
     title: "Secret Box",
     category: "gift",
@@ -194,3 +241,18 @@ export const templates: Template[] = [
     featured: true,
   },
 ];
+
+// Скрытые дизайны не попадают в каталог. Исходный массив не изменяется.
+export function getVisibleTemplates(
+  category?: TemplateCategory,
+  featured = false,
+) {
+  return templates
+    .filter(
+      (template) =>
+        template.status !== "hidden" &&
+        (!category || template.category === category) &&
+        (!featured || template.featured),
+    )
+    .sort((first, second) => first.order - second.order);
+}

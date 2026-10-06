@@ -5,7 +5,9 @@ import { notFound } from "next/navigation";
 import { templates } from "@/data/templates";
 import { DemoExperience } from "@/components/demo/DemoExperience";
 export function generateStaticParams() {
-  return templates.map((t) => ({ slug: t.slug }));
+  return templates
+    .filter((template) => template.status !== "hidden")
+    .map((t) => ({ slug: t.slug }));
 }
 export async function generateMetadata({
   params,
@@ -27,7 +29,7 @@ export default async function Demo({
 }) {
   const { slug } = await params;
   const t = templates.find((t) => t.slug === slug);
-  if (!t) notFound();
+  if (!t || t.status === "hidden") notFound();
   return (
     <div className={`demo-page ${t.category}`}>
       <div className="demo-bar">
