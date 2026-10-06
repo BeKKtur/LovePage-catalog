@@ -2,11 +2,41 @@
   "white-pearl": {
     "demoUrl": "https://marriage-coral.vercel.app/",
     "image": "/website-previews/white-pearl-e62816a37860d29e343c540a.png",
-    "capturedAt": "2026-10-06T11:01:25.119Z"
+    "capturedAt": "2026-10-06T17:34:28.094Z"
   },
   "golden-vows": {
     "demoUrl": "https://invite-guest-rosy.vercel.app/",
     "image": "/website-previews/golden-vows-75c265d0c32439875c97e27a.png",
-    "capturedAt": "2026-10-06T11:01:31.176Z"
+    "capturedAt": "2026-10-06T17:34:34.033Z"
+  },
+  "emerald-wedding": {
+    "demoUrl": "https://invite-khaki-two.vercel.app/",
+    "image": "/website-previews/emerald-wedding-782f964d3742107f428ec9ee.png",
+    "capturedAt": "2026-10-06T17:34:39.498Z"
+  },
+  "royal-blue": {
+    "demoUrl": "https://marry-invite-inky.vercel.app/",
+    "image": "/website-previews/royal-blue-b28f24531fd3fd2eae9303fd.png",
+    "capturedAt": "2026-10-06T17:34:42.936Z"
+  },
+  "pink-blossom": {
+    "demoUrl": "https://kyz-uzatuu-opal.vercel.app/",
+    "image": "/website-previews/pink-blossom-ffc98a195dbc7e6817ed4607.png",
+    "capturedAt": "2026-10-06T16:59:52.050Z"
+  },
+  "white-butterfly": {
+    "demoUrl": "https://kyzuzatuu-2.vercel.app/",
+    "image": "/website-previews/white-butterfly-7bfb7b26ff12bc22e6e4c296.png",
+    "capturedAt": "2026-10-06T16:59:54.648Z"
+  },
+  "our-story": {
+    "demoUrl": "https://for-you-dizn.vercel.app/",
+    "image": "/website-previews/our-story-98908da50ee26afe790ef813.png",
+    "capturedAt": "2026-10-06T17:00:00.168Z"
+  },
+  "love-letter": {
+    "demoUrl": "https://love-page-for-u.vercel.app/",
+    "image": "/website-previews/love-letter-d9dc6c860f3ac3d97e8e110c.png",
+    "capturedAt": "2026-10-06T17:00:06.096Z"
   }
 }
