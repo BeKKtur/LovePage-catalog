@@ -395,7 +395,7 @@ em {
   background: #dcdcc7;
   color: #616449;
 }
-.category-card:hover .category-text {
+.category-text {
   padding: 22px 0 0;
 }
 .category-text h3 {
