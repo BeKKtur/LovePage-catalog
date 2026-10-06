@@ -1,5 +1,5 @@
 // Запускается перед сборкой. Не является публичным API: URL берутся только из данных владельца.
-import { readFile, writeFile, mkdir, rename, access } from "node:fs/promises";
+import { readFile, writeFile, mkdir, rename, access, rm } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 import { lookup } from "node:dns/promises";
@@ -108,6 +108,7 @@ async function main() {
   } catch {
     /* Первая сборка. */
   }
+  const obsoleteImages = new Set();
   let browser;
   try {
     browser = await launchBrowser();
@@ -125,8 +126,6 @@ async function main() {
         );
         continue;
       }
-      const filename = `${createHash("sha256").update(demoUrl).digest("hex").slice(0, 24)}.png`;
-      const destination = resolve(outputDirectory, filename);
       const context = await browser.newContext({
         viewport: { width: 390, height: 796 },
         deviceScaleFactor: 1,
@@ -182,14 +181,20 @@ async function main() {
           ]),
         );
         await page.waitForTimeout(1500);
-        const temporaryPath = `${destination}.tmp.png`;
-        await page.screenshot({
-          path: temporaryPath,
+        const screenshot = await page.screenshot({
           fullPage: false,
           animations: "disabled",
           timeout: 15000,
         });
+        // Новый адрес при изменении картинки: браузер/CDN не покажет старый screenshot из кэша.
+        const filename = `${createHash("sha256").update(demoUrl).update(screenshot).digest("hex").slice(0, 24)}.png`;
+        const destination = resolve(outputDirectory, filename);
+        const temporaryPath = `${destination}.tmp.png`;
+        await writeFile(temporaryPath, screenshot);
         await rename(temporaryPath, destination);
+        const previousImage = manifest[demoUrl]?.image;
+        if (previousImage && previousImage !== `/website-previews/${filename}`)
+          obsoleteImages.add(previousImage);
         manifest[demoUrl] = {
           image: `/website-previews/${filename}`,
           capturedAt: new Date().toISOString(),
@@ -214,7 +219,22 @@ async function main() {
   } finally {
     await browser.close();
   }
-  await writeFile(manifestPath, JSON.stringify(manifest, null, 2) + "\n");
+  await writeFile(
+    `${manifestPath}.tmp`,
+    JSON.stringify(manifest, null, 2) + "\n",
+  );
+  await rename(`${manifestPath}.tmp`, manifestPath);
+  const activeImages = new Set(
+    Object.values(manifest).map((preview) => preview.image),
+  );
+  for (const image of obsoleteImages) {
+    if (
+      /^\/website-previews\/[a-f0-9]{24}\.png$/.test(image) &&
+      !activeImages.has(image)
+    ) {
+      await rm(resolve(projectRoot, `public${image}`), { force: true });
+    }
+  }
 }
 if (
   process.argv[1] &&
