@@ -1,6 +1,12 @@
 {
-  "https://marriage-coral.vercel.app": {
-    "image": "/website-previews/5600806b7a90b266daccafa8.png",
-    "capturedAt": "2026-10-06T10:35:24.541Z"
+  "white-pearl": {
+    "demoUrl": "https://marriage-coral.vercel.app/",
+    "image": "/website-previews/white-pearl-e62816a37860d29e343c540a.png",
+    "capturedAt": "2026-10-06T11:01:25.119Z"
+  },
+  "golden-vows": {
+    "demoUrl": "https://invite-guest-rosy.vercel.app/",
+    "image": "/website-previews/golden-vows-75c265d0c32439875c97e27a.png",
+    "capturedAt": "2026-10-06T11:01:31.176Z"
   }
 }

@@ -6,20 +6,23 @@ import { getAutomaticPreview } from "@/lib/previews";
 export function PhoneMockup({
   image,
   demoUrl,
+  templateId,
   alt,
   imagePosition = "center",
   priority = false,
 }: {
   image?: string;
   demoUrl?: string;
+  templateId?: string;
   alt: string;
   imagePosition?: string;
   priority?: boolean;
 }) {
   const [failedImages, setFailedImages] = useState<string[]>([]);
-  const candidates = [image?.trim(), getAutomaticPreview(demoUrl)].filter(
-    (candidate): candidate is string => Boolean(candidate),
-  );
+  const candidates = [
+    image?.trim(),
+    getAutomaticPreview(demoUrl, templateId),
+  ].filter((candidate): candidate is string => Boolean(candidate));
   const displayedImage = candidates.find(
     (candidate) => !failedImages.includes(candidate),
   );

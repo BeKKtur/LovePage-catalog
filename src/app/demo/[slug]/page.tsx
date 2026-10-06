@@ -31,7 +31,7 @@ export default async function Demo({
   const { slug } = await params;
   const t = templates.find((t) => t.slug === slug);
   if (!t || t.status === "hidden") notFound();
-  const previewImage = getPreviewImage(t.coverImage, t.demoUrl);
+  const previewImage = getPreviewImage(t.coverImage, t.demoUrl, t.id);
   return (
     <div className={`demo-page ${t.category}`}>
       <div className="demo-bar">

@@ -43,6 +43,7 @@ export function Hero() {
           <PhoneMockup
             image={kyzTemplate?.coverImage}
             demoUrl={kyzTemplate?.demoUrl}
+            templateId={kyzTemplate?.id}
             alt={`${kyzTemplate?.title ?? "Кыз узатуу"} — превью дизайна`}
             imagePosition={kyzTemplate?.imagePosition}
             priority
@@ -52,6 +53,7 @@ export function Hero() {
           <PhoneMockup
             image={weddingTemplate?.coverImage}
             demoUrl={weddingTemplate?.demoUrl}
+            templateId={weddingTemplate?.id}
             alt={`${weddingTemplate?.title ?? "Свадебное приглашение"} — превью дизайна`}
             imagePosition={weddingTemplate?.imagePosition}
             priority

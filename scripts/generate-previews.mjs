@@ -1,5 +1,12 @@
 // Запускается перед сборкой. Не является публичным API: URL берутся только из данных владельца.
-import { readFile, writeFile, mkdir, rename, access, rm } from "node:fs/promises";
+import {
+  readFile,
+  writeFile,
+  mkdir,
+  rename,
+  access,
+  rm,
+} from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 import { lookup } from "node:dns/promises";
@@ -8,6 +15,7 @@ import { resolve } from "node:path";
 import { chromium } from "playwright";
 import ts from "typescript";
 import vm from "node:vm";
+import { normalizeDemoUrl } from "../src/lib/preview-url.mjs";
 
 const projectRoot = fileURLToPath(new URL("../", import.meta.url));
 const manifestPath = resolve(projectRoot, "src/data/generated-previews.json");
@@ -72,6 +80,27 @@ async function launchBrowser() {
     return chromium.launch({ headless: true, channel: "chrome" });
   }
 }
+
+async function saveManifest(manifest, previousManifest) {
+  await writeFile(
+    `${manifestPath}.tmp`,
+    JSON.stringify(manifest, null, 2) + "\n",
+  );
+  await rename(`${manifestPath}.tmp`, manifestPath);
+  const activeImages = new Set(
+    Object.values(manifest).map((preview) => preview.image),
+  );
+  for (const preview of Object.values(previousManifest)) {
+    if (
+      /^\/website-previews\/(?:[a-zA-Z0-9_-]+-)?[a-f0-9]{24}\.png$/.test(
+        preview.image,
+      ) &&
+      !activeImages.has(preview.image)
+    ) {
+      await rm(resolve(projectRoot, `public${preview.image}`), { force: true });
+    }
+  }
+}
 async function main() {
   const source = await readFile(
     resolve(projectRoot, "src/data/templates.ts"),
@@ -85,85 +114,114 @@ async function main() {
   const templates = exports.templates;
   if (!Array.isArray(templates))
     throw new Error("Не удалось прочитать templates.ts");
-  const urls = [
-    ...new Set(
-      templates
-        .filter(
-          (template) =>
-            template.status !== "hidden" &&
-            !template.coverImage?.trim() &&
-            template.demoUrl?.trim(),
-        )
-        .map((template) => template.demoUrl.trim()),
-    ),
-  ];
-  if (!urls.length) {
-    console.log("Автоматические preview: нет дизайнов без ручной обложки.");
-    return;
+  const ids = new Set();
+  for (const template of templates) {
+    if (!template.id || ids.has(template.id))
+      throw new Error(`Пустой или повторяющийся template.id: ${template.id}`);
+    ids.add(template.id);
   }
   await mkdir(outputDirectory, { recursive: true });
-  let manifest = {};
+  let previousManifest = {};
   try {
-    manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+    previousManifest = JSON.parse(await readFile(manifestPath, "utf8"));
   } catch {
     /* Первая сборка. */
   }
-  const obsoleteImages = new Set();
+  const manifest = {};
+  // Миграция старого кеша по URL. Совпадение URL обязательно: чужой/старый screenshot не подставляем.
+  for (const template of templates.filter(
+    (template) => template.status !== "hidden",
+  )) {
+    const demoUrl = normalizeDemoUrl(template.demoUrl);
+    if (!demoUrl) continue;
+    const cached =
+      previousManifest[template.id] ??
+      Object.entries(previousManifest).find(
+        ([url]) => normalizeDemoUrl(url) === demoUrl,
+      )?.[1];
+    if (
+      !cached ||
+      normalizeDemoUrl(cached.demoUrl ?? template.demoUrl) !== demoUrl
+    )
+      continue;
+    try {
+      await access(resolve(projectRoot, `public${cached.image}`));
+      manifest[template.id] = { ...cached, demoUrl };
+    } catch {
+      /* Файл удалён — создадим заново. */
+    }
+  }
+  const automaticTemplates = templates.filter(
+    (template) =>
+      template.status !== "hidden" &&
+      !template.coverImage?.trim() &&
+      template.demoUrl?.trim(),
+  );
+  if (!automaticTemplates.length) {
+    await saveManifest(manifest, previousManifest);
+    console.log("Автоматические preview: нет дизайнов без ручной обложки.");
+    return;
+  }
+  console.log(`Preview: обрабатываем ${automaticTemplates.length} шаблона.`);
   let browser;
   try {
     browser = await launchBrowser();
   } catch {
+    await saveManifest(manifest, previousManifest);
     console.warn(
       "Preview: браузер не установлен. Выполните npm run previews:setup. Сборка использует сохранённые preview или fallback.",
     );
     return;
   }
+  let generated = 0;
   try {
-    for (const demoUrl of urls) {
-      if (!(await isPublicUrl(demoUrl))) {
-        console.warn(
-          "Preview: URL не является публичным HTTP(S)-сайтом, пропускаем.",
-        );
-        continue;
-      }
-      const context = await browser.newContext({
-        viewport: { width: 390, height: 796 },
-        deviceScaleFactor: 1,
-        isMobile: true,
-        reducedMotion: "reduce",
-        serviceWorkers: "block",
-        acceptDownloads: false,
-      });
-      const allowedHosts = new Map();
-      await context.route("**/*", async (route) => {
-        const requestUrl = route.request().url();
-        let allowed = false;
-        try {
-          const url = new URL(requestUrl);
-          const key = `${url.protocol}//${url.host}`;
-          // Проверка каждого redirect/ресурса. Никаких запросов в локальную сеть.
-          if (!allowedHosts.has(key))
-            allowedHosts.set(key, await isPublicUrl(requestUrl));
-          allowed = allowedHosts.get(key);
-        } catch {
-          /* Неподдерживаемая схема. */
-        }
-        try {
-          if (allowed) await route.continue();
-          else await route.abort();
-        } catch {
-          /* Страница могла закрыться по таймауту. */
-        }
-      });
-      await context.routeWebSocket("**/*", (socket) => socket.close());
-      const page = await context.newPage();
-      page.setDefaultTimeout(15000);
+    // Каждый template получает собственный файл, даже если demoUrl у двух дизайнов совпадает.
+    for (const template of automaticTemplates) {
+      const demoUrl = normalizeDemoUrl(template.demoUrl);
+      const label = `${template.code ?? template.id} (${template.id})`;
+      let context;
       try {
+        if (!demoUrl || !(await isPublicUrl(demoUrl)))
+          throw new Error("URL не является публичным HTTP(S)-сайтом");
+        context = await browser.newContext({
+          viewport: { width: 390, height: 796 },
+          deviceScaleFactor: 1,
+          isMobile: true,
+          reducedMotion: "reduce",
+          serviceWorkers: "block",
+          acceptDownloads: false,
+        });
+        const allowedHosts = new Map();
+        await context.route("**/*", async (route) => {
+          let allowed = false;
+          try {
+            const requestUrl = route.request().url();
+            const url = new URL(requestUrl);
+            const key = `${url.protocol}//${url.host}`;
+            if (!allowedHosts.has(key))
+              allowedHosts.set(key, await isPublicUrl(requestUrl));
+            allowed = allowedHosts.get(key);
+          } catch {
+            /* Неподдерживаемая схема. */
+          }
+          try {
+            if (allowed) await route.continue();
+            else await route.abort();
+          } catch {
+            /* Страница закрыта. */
+          }
+        });
+        await context.routeWebSocket("**/*", (socket) => socket.close());
+        const page = await context.newPage();
+        page.setDefaultTimeout(15000);
         const response = await page.goto(demoUrl, {
           waitUntil: "load",
           timeout: 30000,
         });
-        if (!response || !response.ok()) throw new Error("Сайт вернул ошибку");
+        if (!response || !response.ok())
+          throw new Error(
+            `Сайт вернул ошибку ${response?.status() ?? "загрузки"}`,
+          );
         const pageText = (await page.locator("body").innerText()).slice(
           0,
           3000,
@@ -186,55 +244,43 @@ async function main() {
           animations: "disabled",
           timeout: 15000,
         });
-        // Новый адрес при изменении картинки: браузер/CDN не покажет старый screenshot из кэша.
-        const filename = `${createHash("sha256").update(demoUrl).update(screenshot).digest("hex").slice(0, 24)}.png`;
+        const prefix = template.id.replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 80);
+        const hash = createHash("sha256")
+          .update(template.id)
+          .update(demoUrl)
+          .update(screenshot)
+          .digest("hex")
+          .slice(0, 24);
+        const filename = `${prefix}-${hash}.png`;
         const destination = resolve(outputDirectory, filename);
-        const temporaryPath = `${destination}.tmp.png`;
-        await writeFile(temporaryPath, screenshot);
-        await rename(temporaryPath, destination);
-        const previousImage = manifest[demoUrl]?.image;
-        if (previousImage && previousImage !== `/website-previews/${filename}`)
-          obsoleteImages.add(previousImage);
-        manifest[demoUrl] = {
+        await writeFile(`${destination}.tmp.png`, screenshot);
+        await rename(`${destination}.tmp.png`, destination);
+        manifest[template.id] = {
+          demoUrl,
           image: `/website-previews/${filename}`,
           capturedAt: new Date().toISOString(),
         };
-        console.log(`Preview обновлено: ${new URL(demoUrl).hostname}`);
+        // Сохраняем результат сразу: ошибка следующего шаблона не потеряет уже готовые файлы.
+        await saveManifest(manifest, previousManifest);
+        generated++;
+        console.log(
+          `Preview обновлено: ${label} → ${new URL(demoUrl).hostname}`,
+        );
       } catch (error) {
         console.warn(
-          `Preview не обновлено: ${new URL(demoUrl).hostname} (${error.message}). Сохраняем предыдущий screenshot или fallback.`,
+          `Preview не обновлено: ${label} (${error.message}). Продолжаем остальные шаблоны; сохраняем подходящий кеш или fallback.`,
         );
-        const cached = manifest[demoUrl];
-        if (cached) {
-          try {
-            await access(resolve(projectRoot, `public${cached.image}`));
-          } catch {
-            delete manifest[demoUrl];
-          }
-        }
       } finally {
-        await context.close();
+        await context?.close().catch(() => {});
       }
     }
   } finally {
     await browser.close();
   }
-  await writeFile(
-    `${manifestPath}.tmp`,
-    JSON.stringify(manifest, null, 2) + "\n",
+  await saveManifest(manifest, previousManifest);
+  console.log(
+    `Preview: обработано ${automaticTemplates.length}, создано ${generated}, ошибок ${automaticTemplates.length - generated}.`,
   );
-  await rename(`${manifestPath}.tmp`, manifestPath);
-  const activeImages = new Set(
-    Object.values(manifest).map((preview) => preview.image),
-  );
-  for (const image of obsoleteImages) {
-    if (
-      /^\/website-previews\/[a-f0-9]{24}\.png$/.test(image) &&
-      !activeImages.has(image)
-    ) {
-      await rm(resolve(projectRoot, `public${image}`), { force: true });
-    }
-  }
 }
 if (
   process.argv[1] &&

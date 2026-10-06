@@ -46,7 +46,7 @@ export const templates: Template[] = [
     status: "available",
     slug: "white-pearl",
     // Название в каталоге
-    title: "White Pearl",
+    title: "Ivory Vows",
     // Категория из списка выше
     category: "wedding",
     // Короткое описание
@@ -71,15 +71,15 @@ export const templates: Template[] = [
     order: 2,
     status: "available",
     slug: "golden-vows",
-    title: "Golden Vows",
+    title: "Our Story",
     category: "wedding",
     description:
       "Персональный дизайн «Golden Vows»: ваши имена, фотографии и особенные слова в гармоничной композиции.",
     oldPrice: 2500,
     price: 1500,
-    coverImage: "/previews/golden-vows.svg",
-    demoUrl: "",
-    featured: false,
+    coverImage: "",
+    demoUrl: "https://invite-guest-rosy.vercel.app/",
+    featured: true,
   },
   {
     id: "emerald-wedding",
