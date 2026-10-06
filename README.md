@@ -1,38 +1,45 @@
 # LovePage
 
-Next.js · TypeScript · Tailwind CSS · App Router.
+## Где менять контакты
+`src/config/site.ts` → `SITE_CONFIG.contacts.instagram` и `whatsapp`.
+Instagram — полная ссылка. WhatsApp — международный номер или ссылка wa.me.
+Пустой контакт отображается недоступным.
 
-## Запуск и проверка
+## Где менять цены
+`src/config/site.ts` → `pricing.readyTemplate` и `customDesign` — цены «от».
+Цена конкретного дизайна — его `price` в `src/data/templates.ts`.
 
+## Как добавить новый дизайн
+1. Добавь screenshot в `public/templates/`.
+2. Открой `src/data/templates.ts` и скопируй первый объект.
+3. Измени id, slug, title, description и price.
+4. Выбери category: `wedding`, `kyz-uzatuu`, `love` или `gift`.
+5. Укажи coverImage, например `/templates/my-design.webp`.
+6. Вставь настоящую ссылку Vercel в demoUrl. Без неё показывается «Скоро».
+7. Поставь featured: true, чтобы показать дизайн на главной.
+
+## Категории и их изображения
+Данные: `src/data/categories.ts`.
+Изображения: `public/categories/` — wedding.webp, kyz-uzatuu.webp, love.webp, gift.webp.
+Чтобы заменить изображение, замени файл или измени поле image.
+
+## Где находятся компоненты
+`src/components/layout/` — Header и Footer.
+`home/` — главная и её секции. `catalog/` — карточки и mockup.
+`order/` — окно и управление заказом. `shared/` — CTA, FAQ и контакты.
+`src/app/[category]/page.tsx` — одна страница автоматически для каждой категории.
+
+## Как запустить проект
 ```sh
 npm install
 npm run dev
+```
+
+## Как проверить перед публикацией
+```sh
 npm run lint
 npm run typecheck
 npm run build
 ```
-
-Сборка создаёт статический сайт в `out/`.
-
-## Настройка в одном месте
-
-`data/config.ts`:
-- `BRAND_NAME` — название бренда.
-- `CONTACTS.instagram` — полная ссылка Instagram.
-- `CONTACTS.whatsapp` — международный номер WhatsApp.
-- `PRICES` — стартовые цены.
-
-Контакты пока пустые. Неуказанные контакты отображаются недоступными, без фиктивных ссылок. Заказ всегда открывает окно с выбранным шаблоном, категорией, ценой и сообщением. WhatsApp передаёт сообщение; для Instagram его можно скопировать. Ошибка clipboard предлагает ручное копирование.
-
-## Новый дизайн
-
-1. Положите screenshot в `public/templates/`.
-2. Добавьте объект в `data/templates.ts`.
-3. Укажите `coverImage: '/templates/имя.webp'` и реальный `demoUrl`.
-4. Сделайте push и разверните обновлённую сборку.
-
-Категории и featured фильтруются автоматически. `demoUrl` открывается сразу в новой вкладке. Если ссылки нет или она пустая — отображается недоступная кнопка «Скоро». Сейчас реальных ссылок не предоставлено: локальные демонстрации `/demo/[slug]` сохранены отдельно и не подменяют настоящие сайты.
-
-`data/categories.ts` — коллекции. `public/previews/` — существующие типографические обложки; бренд в них автоматически обновляется перед dev/build из config.
-
-Данные локальных демонстраций вымышленные. RSVP не отправляется на сервер.
+Сборка создаёт `out/`. После изменения данных сделай push и публикацию.
+Локальные /demo/ содержат примеры; RSVP не отправляется на сервер.
