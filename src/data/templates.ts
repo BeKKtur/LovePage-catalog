@@ -7,7 +7,7 @@
 3. Измени id, slug, title, category, description,
    code (уникальный), order, price, coverImage и demoUrl.
 4. featured: true — дизайн также появится на главной.
-status: available — обычная карточка; soon — без демо; hidden — скрыта.
+status: available — обычная карточка; soon — пометка готовности (demoUrl определяет доступность демо); hidden — скрыта.
 badge: "Новинка" — маленькая метка (можно не указывать).
 order — порядок карточек, меньшее число идёт раньше.
 imagePosition: "top", "center" или "bottom" — кадрирование screenshot.
@@ -60,7 +60,7 @@ export const templates: Template[] = [
     // Какая часть screenshot видна: top, center или bottom
     imagePosition: "center",
     // Реальная ссылка Vercel или другого хостинга; пустая = «Скоро»
-    demoUrl: "",
+    demoUrl: "https://marriage-coral.vercel.app",
     // Показывать также среди избранных на главной
     featured: true,
   },

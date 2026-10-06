@@ -6,8 +6,8 @@ import { PhoneMockup } from "@/components/catalog/PhoneMockup";
 import { useOrder } from "@/components/order/OrderProvider";
 export function TemplateCard({ template }: { template: Template }) {
   const { openOrderModal } = useOrder();
-  const demoUrl =
-    template.status === "soon" ? undefined : template.demoUrl?.trim();
+  // Заполненная ссылка всегда открывает демо; пустая показывает «Скоро».
+  const demoUrl = template.demoUrl?.trim();
   const visual = (
     <>
       <PhoneMockup
