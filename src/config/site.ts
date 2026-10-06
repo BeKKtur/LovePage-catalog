@@ -2,8 +2,8 @@
 export const SITE_CONFIG = {
   brandName: "LovePage", // Название бренда
   contacts: {
-    instagram: "", // Полная ссылка на Instagram
-    whatsapp: "", // Международный номер или ссылка https://wa.me/...
+    instagram: "https://www.instagram.com/lovepage.kg/", // Полная ссылка на Instagram
+    whatsapp: "996552320914", // Международный номер или ссылка https://wa.me/...
   },
   pricing: {
     readyTemplate: 1500, // Цена готового дизайна «от»

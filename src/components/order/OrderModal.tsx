@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { Template } from "@/data/templates";
 import { categories } from "@/data/categories";
-import { formatPrice, SITE_CONFIG } from "@/config/site";
+import { formatPrice } from "@/config/site";
 import { ContactLinks } from "@/components/shared/ContactLinks";
 
 export function OrderModal({
@@ -37,6 +37,12 @@ export function OrderModal({
       window.scrollTo({ top: scrollPosition, behavior: "instant" });
     };
   }, []);
+
+  useEffect(() => {
+    if (copyStatus !== "copied") return;
+    const timer = setTimeout(() => setCopyStatus("idle"), 3000);
+    return () => clearTimeout(timer);
+  }, [copyStatus]);
 
   async function handleCopyMessage() {
     try {
@@ -103,13 +109,6 @@ export function OrderModal({
               ? "Выделили текст — скопируйте вручную."
               : ""}
         </span>
-        {(!SITE_CONFIG.contacts.instagram ||
-          !SITE_CONFIG.contacts.whatsapp) && (
-          <small>
-            Контакты пока подключены не полностью. Сообщение можно сохранить для
-            заказа.
-          </small>
-        )}
       </div>
     </dialog>
   );
