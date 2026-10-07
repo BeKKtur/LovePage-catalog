@@ -114,7 +114,7 @@ export const templates: Template[] = [
     featured: false,
   },
   {
-    id: "royal-blue",
+    id: "Emerald",
     code: "W-04",
     order: 4,
     status: "available",
