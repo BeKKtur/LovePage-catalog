@@ -1,3 +1,4 @@
+import { ArrowLeft } from "@/components/shared/Icons";
 import { getPreviewImage } from "@/lib/previews";
 import type { Metadata } from "next";
 import Image from "next/image";
@@ -35,7 +36,9 @@ export default async function Demo({
   return (
     <div className={`demo-page ${t.category}`}>
       <div className="demo-bar">
-        <Link href={`/${t.category}`}>← В коллекцию</Link>
+        <Link href={`/${t.category}`}>
+          <ArrowLeft /> В коллекцию
+        </Link>
         <span>Демонстрация · {t.title}</span>
       </div>
       <div className="demo-cover">

@@ -1,4 +1,5 @@
 "use client";
+import { ArrowUpRight, CloseIcon, MenuIcon } from "@/components/shared/Icons";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
@@ -54,7 +55,7 @@ export function Header() {
         </Link>
         <nav className="desktop-nav">{links}</nav>
         <OrderButton className="header-order">
-          Заказать <span>↗</span>
+          Заказать <ArrowUpRight />
         </OrderButton>
         <button
           className="burger"
@@ -62,8 +63,7 @@ export function Header() {
           aria-expanded={open}
           onClick={() => setOpen(true)}
         >
-          <span />
-          <span />
+          <MenuIcon />
         </button>
       </header>
       <dialog
@@ -78,7 +78,7 @@ export function Header() {
             aria-label="Закрыть меню"
             onClick={() => setOpen(false)}
           >
-            ×
+            <CloseIcon />
           </button>
         </div>
         <p className="eyebrow">ДЛЯ ВАШИХ ОСОБЕННЫХ МОМЕНТОВ</p>

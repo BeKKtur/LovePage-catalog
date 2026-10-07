@@ -1,3 +1,4 @@
+import { SparkleIcon } from "@/components/shared/Icons";
 export function Benefits() {
   return (
     <section className="benefits section">
@@ -12,7 +13,9 @@ export function Benefits() {
           "Информацию можно изменить",
         ].map((x) => (
           <p key={x}>
-            <span>✧</span>
+            <span>
+              <SparkleIcon />
+            </span>
             {x}
           </p>
         ))}

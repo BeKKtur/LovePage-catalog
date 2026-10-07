@@ -1,4 +1,5 @@
 "use client";
+import { ArrowUpRight } from "@/components/shared/Icons";
 import { type Template } from "@/data/templates";
 import { categories } from "@/data/categories";
 import { SITE_CONFIG, formatPrice } from "@/config/site";
@@ -65,7 +66,7 @@ export function TemplateCard({ template }: { template: Template }) {
             >
               <span className="desktop-preview-label">Посмотреть</span>
               <span className="mobile-preview-label">Смотреть</span>{" "}
-              <span aria-hidden="true">↗</span>
+              <ArrowUpRight />
             </a>
           ) : (
             <button disabled>Скоро</button>
@@ -74,7 +75,7 @@ export function TemplateCard({ template }: { template: Template }) {
             aria-label={`Заказать ${template.title}`}
             onClick={() => openOrderModal(template)}
           >
-            Заказать <span aria-hidden="true">↗</span>
+            Заказать <ArrowUpRight />
           </button>
         </div>
       </div>

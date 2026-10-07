@@ -1,3 +1,4 @@
+import { ArrowUpRight } from "@/components/shared/Icons";
 import { SITE_CONFIG, formatPrice } from "@/config/site";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -31,7 +32,9 @@ export default function Custom() {
           идею. Мы создадим персональный сайт с индивидуальным дизайном,
           анимациями и функционалом.
         </p>
-        <OrderButton>Обсудить идею ↗</OrderButton>
+        <OrderButton>
+          Обсудить идею <ArrowUpRight />
+        </OrderButton>
         <span className="custom-signature">One of a kind.</span>
       </section>
       <section className="section">

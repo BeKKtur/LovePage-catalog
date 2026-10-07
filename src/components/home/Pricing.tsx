@@ -1,3 +1,4 @@
+import { ArrowUpRight, CheckIcon } from "@/components/shared/Icons";
 import Link from "next/link";
 import { SITE_CONFIG, formatPrice } from "@/config/site";
 export function Pricing() {
@@ -53,17 +54,17 @@ export function Pricing() {
             <ul>
               {p.items.map((x) => (
                 <li key={x}>
-                  ✓ <span>{x}</span>
+                  <CheckIcon /> <span>{x}</span>
                 </li>
               ))}
             </ul>
             {i ? (
               <Link className="button" href="/custom">
-                Обсудить идею ↗
+                Обсудить идею <ArrowUpRight />
               </Link>
             ) : (
               <Link className="button" href="#collections">
-                Выбрать дизайн ↗
+                Выбрать дизайн <ArrowUpRight />
               </Link>
             )}
           </article>

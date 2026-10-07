@@ -1,3 +1,4 @@
+import { ArrowUpRight } from "@/components/shared/Icons";
 import Image from "next/image";
 import Link from "next/link";
 import { categories } from "@/data/categories";
@@ -37,7 +38,9 @@ export function Categories() {
             <div className="category-text">
               <h3>{category.title}</h3>
               <p>{category.short}</p>
-              <span className="text-link">Смотреть коллекцию ↗</span>
+              <span className="text-link">
+                Смотреть коллекцию <ArrowUpRight />
+              </span>
             </div>
           </Link>
         ))}
