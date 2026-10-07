@@ -1,3 +1,4 @@
+import { ArrowUpRight } from "@/components/shared/Icons";
 import Link from "next/link";
 import { ContactLinks } from "@/components/shared/ContactLinks";
 export function CTA() {
@@ -10,7 +11,7 @@ export function CTA() {
       <p>Создадим приглашение специально для вас.</p>
       <div>
         <Link href="/custom" className="button">
-          Индивидуальный дизайн ↗
+          Индивидуальный дизайн <ArrowUpRight />
         </Link>
         <div className="cta-contacts">
           <p>Связаться с нами</p>

@@ -1,3 +1,4 @@
+import { ArrowUpRight } from "@/components/shared/Icons";
 import { SITE_CONFIG, whatsappUrl } from "@/config/site";
 export function ContactLinks({ message }: { message?: string }) {
   return (
@@ -14,7 +15,7 @@ export function ContactLinks({ message }: { message?: string }) {
             target="_blank"
             rel="noopener noreferrer"
           >
-            {label} ↗
+            {label} <ArrowUpRight />
           </a>
         ) : (
           <span
@@ -23,7 +24,7 @@ export function ContactLinks({ message }: { message?: string }) {
             aria-disabled="true"
             title="Контакт пока не подключён"
           >
-            {label} ↗
+            {label} <ArrowUpRight />
           </span>
         ),
       )}

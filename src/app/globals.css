@@ -1931,3 +1931,64 @@ em {
     display: none;
   }
 }
+
+/* Общие SVG-иконки: не используют текстовые/emoji шрифты на iOS. */
+.svg-icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  color: inherit;
+  pointer-events: none;
+  vertical-align: middle;
+  background: none;
+}
+.icon-arrow-up-right,
+.icon-arrow-left {
+  width: 16px;
+  height: 16px;
+}
+.icon-close,
+.icon-menu {
+  width: 24px;
+  height: 24px;
+}
+.icon-check {
+  width: 14px;
+  height: 14px;
+}
+.icon-ornament {
+  width: 1em;
+  height: 1em;
+}
+.icon-plus {
+  width: 1em;
+  height: 1em;
+}
+.button,
+.text-link,
+.header-order,
+.card-actions :is(a, button),
+.demo-bar > a {
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+.demo-bar > a {
+  display: inline-flex;
+}
+.copy-feedback {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.pricing-card li > .svg-icon {
+  margin-top: 4px;
+}
+.button,
+.text-link,
+.card-actions :is(a, button),
+.demo-bar > a {
+  display: inline-flex;
+}

@@ -1,4 +1,5 @@
 "use client";
+import { CloseIcon, CheckIcon } from "@/components/shared/Icons";
 import { useEffect, useRef, useState } from "react";
 import type { Template } from "@/data/templates";
 import { categories } from "@/data/categories";
@@ -73,7 +74,7 @@ export function OrderModal({
       }}
     >
       <button className="close" aria-label="Закрыть" onClick={closeOrderModal}>
-        ×
+        <CloseIcon />
       </button>
       <div className="order-content">
         <p className="eyebrow">
@@ -103,11 +104,15 @@ export function OrderModal({
           Скопировать сообщение
         </button>
         <span className="copy-feedback" role="status">
-          {copyStatus === "copied"
-            ? "Скопировано ✓"
-            : copyStatus === "failed"
-              ? "Выделили текст — скопируйте вручную."
-              : ""}
+          {copyStatus === "copied" ? (
+            <>
+              Скопировано <CheckIcon />
+            </>
+          ) : copyStatus === "failed" ? (
+            "Выделили текст — скопируйте вручную."
+          ) : (
+            ""
+          )}
         </span>
       </div>
     </dialog>

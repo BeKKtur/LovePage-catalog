@@ -1,3 +1,4 @@
+import { ArrowUpRight } from "@/components/shared/Icons";
 import Link from "next/link";
 import { Hero } from "@/components/home/Hero";
 import { Categories } from "@/components/home/Categories";
@@ -22,7 +23,7 @@ export default function Home() {
             </h2>
           </div>
           <Link href="#collections" className="text-link">
-            Смотреть все коллекции ↗
+            Смотреть все коллекции <ArrowUpRight />
           </Link>
         </div>
         <TemplateGrid featured />

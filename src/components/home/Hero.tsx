@@ -1,3 +1,4 @@
+import { ArrowUpRight, SparkleIcon } from "@/components/shared/Icons";
 import Link from "next/link";
 import { getVisibleTemplates } from "@/data/templates";
 import { PhoneMockup } from "@/components/catalog/PhoneMockup";
@@ -22,14 +23,16 @@ export function Hero() {
         </p>
         <div className="hero-actions">
           <Link className="button" href="#collections">
-            Выбрать дизайн <span>↗</span>
+            Выбрать дизайн <ArrowUpRight />
           </Link>
           <Link className="text-link" href="/custom">
             Индивидуальный заказ
           </Link>
         </div>
         <div className="hero-note">
-          <span className="tiny-star">✧</span>
+          <span className="tiny-star">
+            <SparkleIcon />
+          </span>
           <p>
             Создано с вниманием к вашей истории.
             <br />
@@ -68,11 +71,17 @@ export function Hero() {
       </div>
       <div className="hero-bottom">
         <span>СВАДЬБА</span>
-        <i>✧</i>
+        <i>
+          <SparkleIcon />
+        </i>
         <span>КЫЗ УЗАТУУ</span>
-        <i>✧</i>
+        <i>
+          <SparkleIcon />
+        </i>
         <span>LOVE STORIES</span>
-        <i>✧</i>
+        <i>
+          <SparkleIcon />
+        </i>
         <span>ПОДАРКИ</span>
       </div>
     </section>

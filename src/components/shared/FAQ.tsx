@@ -1,3 +1,4 @@
+import { PlusIcon } from "@/components/shared/Icons";
 const faqs = [
   [
     "Можно ли изменить дизайн?",
@@ -44,7 +45,9 @@ export function FAQ() {
           <details key={q}>
             <summary>
               {q}
-              <span>+</span>
+              <span>
+                <PlusIcon />
+              </span>
             </summary>
             <p>{a}</p>
           </details>
