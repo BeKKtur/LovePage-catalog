@@ -113,7 +113,22 @@ export const templates: Template[] = [
     demoUrl: "https://marry-invite-inky.vercel.app/",
     featured: false,
   },
-
+  {
+    id: "royal-blue",
+    code: "W-04",
+    order: 4,
+    status: "available",
+    slug: "royal-blue",
+    title: "Emerald",
+    category: "wedding",
+    description:
+      "Персональный дизайн «Royal Blue»: ваши имена, фотографии и особенные слова в гармоничной композиции.",
+    oldPrice: 2500,
+    price: 1500,
+    coverImage: "",
+    demoUrl: "https://emerald-wedding.vercel.app/",
+    featured: false,
+  },
   {
     id: "pink-blossom",
     code: "K-01",
